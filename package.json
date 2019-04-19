@@ -27,8 +27,10 @@
     "joi-objectid": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.2",
-    "nodemon": "^1.18.11",
     "validator": "^10.11.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
   }
 }
