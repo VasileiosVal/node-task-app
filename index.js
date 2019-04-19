@@ -1,7 +1,7 @@
 require("./configuration/generalErrors")();
 require("express-async-errors");
 require("dotenv").config();
-require();
+require("./configuration/jwt")();
 const express = require("express");
 
 const app = express();
