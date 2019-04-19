@@ -12,4 +12,4 @@ require("./configuration/joi")();
 require("./configuration/routes")(app);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => logger.info(`server listening in port ${port}`));
+app.listen(port, () => logger.info(`server listening on port ${port}`));
