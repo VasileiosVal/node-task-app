@@ -1,14 +1,15 @@
-require("./configuration/generalErrors")();
+const logger = require("./configuration/logging");
+require("./configuration/generalErrors")(logger);
 require("express-async-errors");
 require("dotenv").config();
-require("./configuration/jwt")();
+require("./configuration/jwt")(logger);
 const express = require("express");
 
 const app = express();
 require("./configuration/config")(app);
-require("./configuration/db")();
+require("./configuration/db")(logger);
 require("./configuration/joi")();
 require("./configuration/routes")(app);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log("listening on 3000"));
+app.listen(port, () => logger.info(`server listening in port ${port}`));

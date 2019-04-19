@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
-module.exports = () => {
+module.exports = logger => {
   mongoose
     .connect(process.env.MONGO_DB, { useNewUrlParser: true })
-    .then(() => console.log("db succesfuly connected"));
+    .then(() => logger.info("DB connection successful"))
+    .catch(err => {
+      logger.error(err.message, err);
+      process.exit(1);
+    });
 };

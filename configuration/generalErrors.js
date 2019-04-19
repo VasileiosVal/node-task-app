@@ -1,10 +1,10 @@
-module.exports = () => {
+module.exports = logger => {
   process.on("uncaughtException", err => {
-    console.log("uncaughtException", err.message);
+    logger.error(err.message, err);
     process.exit(1);
   });
   process.on("unhandledRejection", err => {
-    console.log("unhandledRejection", err.message);
+    logger.error(err.message, err);
     process.exit(1);
   });
 };
