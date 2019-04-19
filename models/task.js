@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
+const { getTaskSchema, options } = require("../utils/joi-general-functions");
+
 const taskSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
       minlength: 3,
       maxlength: 50
@@ -14,12 +15,12 @@ const taskSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true,
-      minlength: 5,
-      maxlength: 255
+      maxlength: 255,
+      default: null
     },
     deadline: {
       type: Date,
-      default: Date.now
+      default: null
     },
     priority: {
       type: String,
@@ -47,31 +48,15 @@ const taskSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const validate = arg => {
-  const schema = {
-    name: Joi.string()
-      .required()
-      .min(3)
-      .max(50)
-      .trim(),
-    description: Joi.string()
-      .min(5)
-      .max(255)
-      .trim(),
-    deadline: Joi.date(),
-    priority: Joi.string().valid(["minor", "normal", "important", "hurry"]),
-    status: Joi.string().valid([
-      "abandonded",
-      "not started",
-      "just started",
-      "working",
-      "almost completed",
-      "completed"
-    ]),
-    user: Joi.objectId().required()
-  };
+taskSchema.index({ name: 1, user: 1 }, { unique: true });
 
-  return Joi.validate(arg, schema, { stripUnknown: true, abortEarly: false });
+const validate = (method = "post", arg) => {
+  const schema = getTaskSchema(method);
+
+  return Joi.validate(arg, schema, options);
 };
 
-module.exports = mongoose.model("Task", taskSchema);
+module.exports = {
+  Task: mongoose.model("Task", taskSchema),
+  validate
+};

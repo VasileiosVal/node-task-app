@@ -1,13 +1,15 @@
 const express = require("express");
-const validateObjId = require("../middleware/validateObjectId");
 const router = express.Router();
 
+const validateObjId = require("../middleware/validateObjectId");
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 const { getUsers, getUser, getProfile } = require("../controllers/users");
 
-router.get("/", getUsers);
+router.get("/", [auth, admin], getUsers);
 
-router.get("/:id", validateObjId, getUser);
+router.get("/profile", auth, getProfile);
 
-router.get("/profile", getProfile);
+router.get("/:id", [auth, admin, validateObjId], getUser);
 
 module.exports = router;

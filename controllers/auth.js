@@ -3,13 +3,12 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const { User, validate } = require("../models/user");
 const genErrorResponse = require("../utils/generateError");
+const { generateJoiError } = require("../utils/joi-general-functions");
 
 const registerUser = async (req, res) => {
   const result = validate("register", req.body);
   if (result.error) {
-    const errors = {};
-    for (let i of result.error.details) errors[i.path[0]] = i.message;
-    const message = { error: errors };
+    const message = generateJoiError(result);
     return res.status(400).send(message);
   }
 
@@ -25,21 +24,22 @@ const registerUser = async (req, res) => {
     to: `${user.email}`,
     from: "noreply@taskManager.com",
     subject: "Account verification",
-    html: `<strong>Follow the link to activate your account: <a href="${
+    html: `<div><h2>Hello ${user.name}</h2>
+    <p>Follow the link to activate your account: <a href="${
       process.env.URL
-    }/api/auth/verify/${user.confirmation}">Click Here</a></strong>`
+    }/api/auth/verify/${user.confirmation}">Click Here</a></p></div>`
   };
 
   sgMail.send(msg);
-  res.send({ message: "Email verification sent" });
+  res.send({
+    message: "User succesfully registered. An Email verification sent"
+  });
 };
 
 const loginUser = async (req, res) => {
   const result = validate("login", req.body);
   if (result.error) {
-    const errors = {};
-    for (let i of result.error.details) errors[i.path[0]] = i.message;
-    const message = { error: errors };
+    const message = generateJoiError(result);
     return res.status(400).send(message);
   }
 
@@ -47,10 +47,9 @@ const loginUser = async (req, res) => {
   if (!user) genErrorResponse(400, "Invalid Email or Password");
   const match = await user.verifyPassword(result.value.password);
   if (!match) genErrorResponse(400, "Invalid Email or Password");
-
+  user.checkActivity();
   const token = user.getJWTtoken();
-  console.log(token.expiresIn);
-  res.send({ token, user });
+  res.send(token);
 };
 
 const verifyUser = async (req, res) => {

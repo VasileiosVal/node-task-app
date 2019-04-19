@@ -3,7 +3,7 @@ const validator = require("validator");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const chooseMethod = require("../utils/joi-schemas");
+const { chooseMethod, options } = require("../utils/joi-general-functions");
 const genErrorResponse = require("../utils/generateError");
 
 const userSchema = new mongoose.Schema(
@@ -49,8 +49,7 @@ const userSchema = new mongoose.Schema(
     confirmation: {
       type: String,
       default: null,
-      minlength: 5,
-      maxlength: 60
+      maxlength: 100
     }
   },
   { timestamps: true }
@@ -66,13 +65,24 @@ userSchema.methods.verifyPassword = async function(pass) {
 };
 
 userSchema.methods.getJWTtoken = function() {
-  return jwt.decode(
-    jwt.sign(
-      { _id: this._id, email: this.email, role: this.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    )
-  );
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "24h"
+  });
+};
+
+userSchema.statics.verifyJWTtoken = token => {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (e) {
+    genErrorResponse(401, e.message);
+  }
+};
+
+userSchema.methods.checkActivity = function() {
+  if (!this.confirmed || this.confirmation)
+    genErrorResponse(400, "Profile is not verified");
+  if (this.confirmed && !this.confirmation && !this.isActive)
+    genErrorResponse(400, "Profile is suspended");
 };
 
 userSchema.methods.generateVerify = function() {
@@ -93,7 +103,7 @@ userSchema.methods.generateVerify = function() {
 
 const validate = (method = "register", arg) => {
   const schema = chooseMethod(method);
-  return Joi.validate(arg, schema, { stripUnknown: true, abortEarly: false });
+  return Joi.validate(arg, schema, options);
 };
 
 module.exports = {
