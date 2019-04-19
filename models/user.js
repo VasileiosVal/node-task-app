@@ -65,14 +65,14 @@ userSchema.methods.verifyPassword = async function(pass) {
 };
 
 userSchema.methods.getJWTtoken = function() {
-  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+  return jwt.sign({ _id: this._id }, process.env.TASKMANAGER_JWT_SECRET, {
     expiresIn: "24h"
   });
 };
 
 userSchema.statics.verifyJWTtoken = token => {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    return jwt.verify(token, process.env.TASKMANAGER_JWT_SECRET);
   } catch (e) {
     genErrorResponse(401, e.message);
   }

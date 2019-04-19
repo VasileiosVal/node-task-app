@@ -1,5 +1,5 @@
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.TASKMANAGER_SENDGRID_API_KEY);
 
 const { User, validate } = require("../models/user");
 const genErrorResponse = require("../utils/generateError");
@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
     subject: "Account verification",
     html: `<div><h2>Hello ${user.name}</h2>
     <p>Follow the link to activate your account: <a href="${
-      process.env.URL
+      process.env.TASKMANAGER_URL
     }/api/auth/verify/${user.confirmation}">Click Here</a></p></div>`
   };
 
