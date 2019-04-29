@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
   if (!match) genErrorResponse(400, "Invalid Email or Password");
   user.checkActivity();
   const token = user.getJWTtoken();
-  res.send(token);
+  res.send({ token, user: user.getUserResponse() });
 };
 
 const verifyUser = async (req, res) => {

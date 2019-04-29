@@ -4,7 +4,6 @@ require("express-async-errors");
 require("dotenv").config();
 require("./configuration/jwt")(logger);
 const express = require("express");
-
 const app = express();
 require("./configuration/config")(app);
 require("./configuration/db")(logger);

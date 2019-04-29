@@ -66,8 +66,21 @@ userSchema.methods.verifyPassword = async function(pass) {
 
 userSchema.methods.getJWTtoken = function() {
   return jwt.sign({ _id: this._id }, process.env.TASKMANAGER_JWT_SECRET, {
-    expiresIn: "24h"
+    expiresIn: "1h"
   });
+};
+
+userSchema.methods.getUserResponse = function() {
+  return {
+    _id: this._id,
+    email: this.email,
+    name: this.name,
+    role: this.role,
+    confirmed: this.confirmed,
+    isActive: this.isActive,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt
+  };
 };
 
 userSchema.statics.verifyJWTtoken = token => {
