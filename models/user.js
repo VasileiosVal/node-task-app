@@ -65,9 +65,15 @@ userSchema.methods.verifyPassword = async function(pass) {
 };
 
 userSchema.methods.getJWTtoken = function() {
-  return jwt.sign({ _id: this._id }, process.env.TASKMANAGER_JWT_SECRET, {
-    expiresIn: "1h"
-  });
+  const accessToken = jwt.sign(
+    { _id: this._id },
+    process.env.TASKMANAGER_JWT_SECRET,
+    {
+      expiresIn: "1h"
+    }
+  );
+  const expiresIn = jwt.decode(accessToken).exp;
+  return { accessToken, expiresIn };
 };
 
 userSchema.methods.getUserResponse = function() {

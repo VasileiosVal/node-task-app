@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 module.exports = logger => {
   mongoose
-    .connect(process.env.TASKMANAGER_MONGO_DB_CLOUD, {
+    .connect(process.env.TASKMANAGER_MONGO_DB, {
       useNewUrlParser: true
     })
     .then(() => logger.info("DB connection successful"))
