@@ -6,8 +6,8 @@ RESTful API managing personal tasks and events implemented in Node.js, Express a
 * Authentication with JWT
 * Authorization middleware with admin layer
 * Error handling with file logging
-* Email verification with SendGrid API after successful registration
-* validation with Joi
+* Email verification with SendGrid API upon successful registration
+* Validation with Joi
 
 more routes and functionalities will be added in the near future.
 
