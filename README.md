@@ -11,7 +11,7 @@ RESTful API managing personal tasks and events implemented in Node.js, Express a
 
 more routes and functionalities will be added in the near future.
 
-## Recuirements
+## Requirements
 
 * Node installed
 * MongoDB configuration for localhost development
